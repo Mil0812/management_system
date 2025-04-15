@@ -18,11 +18,19 @@ class EditLesson extends EditRecord
         ];
     }
 
-    // Обробка даних перед оновленням
-    protected function mutateFormDataBeforeSave(array $data): array
+    protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        $data['student_count'] = count($data['student_id'] ?? []);
-        $data['total_profit'] = $data['student_count'] * ($data['cost'] ?? 0);
-        return $data;
+        $students = $data['students'] ?? [];
+        unset($data['students']);
+
+        $studentCount = count($students);
+        $data['student_count'] = $studentCount;
+        $data['total_profit'] = $studentCount * ($data['cost'] ?? 0);
+
+        $record->update($data);
+
+        $record->students()->sync($students);
+
+        return $record;
     }
 }

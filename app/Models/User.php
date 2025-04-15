@@ -15,7 +15,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles, HasUlids;
+    use HasFactory, Notifiable, HasUlids, HasRoles;
 
     protected $table = 'users';
     protected $primaryKey = 'id';

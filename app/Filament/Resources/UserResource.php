@@ -19,17 +19,30 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-users';
+    protected static ?string $navigationLabel = 'Вчителі';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                TextInput::make('email')->email(),
-                TextInput::make('password')->password()->visibleOn('create'),
-                Select::make('club_id')
-                    ->label('Clubs')
+                TextInput::make('name')
+                    ->label('Ім`я')
+                    ->required(),
+
+                TextInput::make('email')
+                    ->label('Електронна пошта')
+                    ->email()
+                    ->required(),
+
+                TextInput::make('password')
+                    ->label('Пароль')
+                    ->password()
+                    ->visibleOn('create'),
+
+                Select::make('clubs')
+                    ->label('Гуртки')
                     ->multiple()
                     ->options(Club::all()->pluck('name', 'id'))
                     ->searchable()

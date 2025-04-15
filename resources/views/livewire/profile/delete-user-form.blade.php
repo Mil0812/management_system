@@ -8,6 +8,14 @@ new class extends Component
 {
     public string $password = '';
 
+    public function mount(): void
+    {
+        if (Auth::user()->role !== 'teacher') {
+            $this->redirect('/', navigate: true);
+            return;
+        }
+    }
+
     /**
      * Delete the currently authenticated user.
      */

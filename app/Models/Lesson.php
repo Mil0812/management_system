@@ -20,6 +20,8 @@ class Lesson extends Model
     protected $fillable = ['teacher_id', 'student_count', 'club_id',
         'lesson_date', 'lesson_time', 'cost', 'total_profit'];
 
+
+
     public function teacher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'teacher_id');

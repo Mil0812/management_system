@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\StudentResource\Pages;
-use App\Filament\Resources\StudentResource\RelationManagers;
 use App\Models\Student;
 use Faker\Provider\PhoneNumber;
 use Filament\Forms;
@@ -20,14 +19,29 @@ class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-user-group';
+    protected static ?string $navigationLabel = 'Діти';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                TextInput::make('phone')->required(),
+                TextInput::make('name')
+                    ->label('ПІБ дитини')
+                    ->maxLength(255)
+                    ->required(),
+                TextInput::make('phone')
+                    ->label('Номер телефону')
+                    ->tel()
+                    ->mask('+380999999999')
+                    ->rules(['regex:/^\+380\d{9}$/'])
+                    ->validationMessages([
+                        'regex' => 'Номер телефону має бути у форматі +380XXXXXXXXX.',
+                    ])
+                    ->placeholder('+380501234567')
+                    ->maxLength(13)
+                    ->required(),
             ]);
     }
 
@@ -35,8 +49,10 @@ class StudentResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('phone'),
+                TextColumn::make('name')
+                    ->label('ПІБ дитини'),
+                TextColumn::make('phone')
+                    ->label('Номер телефону'),
             ])
             ->filters([
                 //

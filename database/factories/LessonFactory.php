@@ -17,16 +17,20 @@ class LessonFactory extends Factory
 
     public function definition(): array
     {
+        $studentCount = $this->faker->numberBetween(1, 10);
+        $cost = $this->faker->randomFloat(2, 50, 200);
         return [
             'teacher_id' => User::whereHas('roles', function ($query) {
-                    $query->where('name', 'teacher');
-                })->inRandomOrder()->first()->id ?? User::factory()->teacher(),
-            'student_count' => $this->faker->numberBetween(1, 10),
-            'club_id' => Club::inRandomOrder()->first()->id ?? Club::factory(),
-            'lesson_date' => $this->faker->dateTimeBetween('-1 month', '+1 month')->format('Y-m-d'),
+                $query->where('name', 'teacher');
+            })->inRandomOrder()->first()->id ?? UserFactory::new()->teacher()->create()->id,
+            'student_count' => $studentCount,
+            'club_id' => function (array $attributes) {
+                $teacher = User::find($attributes['teacher_id']);
+                return $teacher->clubs()->inRandomOrder()->first()->id ?? Club::factory()->create()->id;
+            },'lesson_date' => $this->faker->dateTimeBetween('-1 month', '+1 month')->format('Y-m-d'),
             'lesson_time' => $this->faker->time('H:i:s'),
-            'cost' => $this->faker->randomFloat(2, 50, 200),
-            'total_profit' => $this->faker->randomFloat(2, 50, 200),
+            'cost' => $cost,
+            'total_profit' => $cost * $studentCount,
         ];
     }
 

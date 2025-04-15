@@ -20,7 +20,8 @@ class ClubFactory extends Factory
     {
         return [
             'name' => $this->faker->unique()->randomElement([
-                'Математика', 'Малювання', 'Музика', 'Кулінарія', 'Творчість'
+                'Математика', 'Малювання', 'Музика', 'Кулінарія', 'Творчість',
+                'Шахи', 'Арт-креатив', 'Танці', 'IT', 'Іноземні мови'
             ]),
             'description' => $this->faker->text(),
         ];
@@ -28,8 +29,12 @@ class ClubFactory extends Factory
     public function configure(): ClubFactory|Factory
     {
         return $this->afterCreating(function (Club $club) {
-            $teachers = User::inRandomOrder()->take(rand(1, 3))->pluck('id');
-            $club->teachers()->sync($teachers);
+            $teachers = User::role('teacher')->inRandomOrder()->take(rand(1, 3))->pluck('id');
+            foreach ($teachers as $teacherId) {
+                if (!$club->teachers()->where('teacher_id', $teacherId)->exists()) {
+                    $club->teachers()->attach($teacherId);
+                }
+            }
         });
     }
 }

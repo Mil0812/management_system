@@ -12,6 +12,14 @@ new class extends Component
     public string $password = '';
     public string $password_confirmation = '';
 
+    public function mount(): void
+    {
+        if (Auth::user()->role !== 'teacher') {
+            $this->redirect('/', navigate: true);
+            return;
+        }
+    }
+
     /**
      * Update the password for the currently authenticated user.
      */

@@ -11,11 +11,19 @@ class CreateLesson extends CreateRecord
 {
     protected static string $resource = LessonResource::class;
 
-    // Обробка даних перед створенням
-    protected function mutateFormDataBeforeCreate(array $data): array
+    protected function handleRecordCreation(array $data): Model
     {
-        $data['student_count'] = count($data['student_id'] ?? []);
-        $data['total_profit'] = $data['student_count'] * ($data['cost'] ?? 0);
-        return $data;
+        $students = $data['students'] ?? [];
+        unset($data['students']);
+
+        $studentCount = count($students);
+        $data['student_count'] = $studentCount;
+        $data['total_profit'] = $studentCount * ($data['cost'] ?? 0);
+
+         $lesson = static::getModel()::create($data);
+
+         $lesson->students()->sync($students);
+
+        return $lesson;
     }
 }

@@ -24,42 +24,53 @@ class LessonResource extends Resource
 {
     protected static ?string $model = Lesson::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-academic-cap';
+    protected static ?string $navigationLabel = 'Уроки';
+    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationGroup = 'Доходи-витрати';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Select::make('teacher_id')
+                    ->label('Вчитель')
                     ->options(User::all()->pluck('name', 'id'))
                     ->required(),
 
-                Select::make('student_id')
+                Select::make('students')
                     ->multiple()
-                    ->label('Students')
+                    ->label('Учні')
                     ->options(Student::all()->pluck('name', 'id'))
                     ->live()
                     ->afterStateUpdated(function ($state, callable $get, callable $set) {
                         $cost = $get('cost') ?? 0;
-                        $set('student_count', count($state));
-                        $set('total_profit', count($state) * $cost);
+                        $studentCount = count($state);
+                        $set('student_count', $studentCount);
+                        $set('total_profit', $studentCount * $cost);
                     })
                     ->searchable(),
 
                 TextInput::make('student_count')
-                    ->label('Кількість студентів')
+                    ->label('Кількість дітей')
                     ->disabled()
                     ->default(0),
 
                 Select::make('club_id')
-                    ->label('Club')
+                    ->label('Назва гуртка')
                     ->options(Club::all()->pluck('name', 'id'))
                     ->searchable()
                     ->required(),
 
-                DatePicker::make('lesson_date')->required(),
+                DatePicker::make('lesson_date')
+                    ->label('Дата заняття')
+                    ->default(now('Europe/Kiev')->toDateString())
+                    ->required(),
+
                 TimePicker::make('lesson_time')
+                    ->label('Час заняття')
                     ->seconds(false)
+                    ->default(now('Europe/Kiev')->format("H:i"))
                     ->required(),
 
                 TextInput::make('cost')
@@ -91,8 +102,8 @@ class LessonResource extends Resource
                 TextColumn::make('teacher.name')->label('Вчитель'),
                 TextColumn::make('student_count')->label('Кількість дітей')->sortable(),
                 TextColumn::make('club.name')->label('Назва гуртка')->sortable(),
-                TextColumn::make('lesson_date'),
-                TextColumn::make('lesson_time'),
+                TextColumn::make('lesson_date')->label('Дата заняття'),
+                TextColumn::make('lesson_time')->label('Час заняття'),
                 TextColumn::make('cost')
                     ->label('Вартість заняття за людину')
                     ->money('UAH'),

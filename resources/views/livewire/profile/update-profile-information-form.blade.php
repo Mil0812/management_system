@@ -16,6 +16,11 @@ new class extends Component
      */
     public function mount(): void
     {
+        if (Auth::user()->role !== 'teacher') {
+            $this->redirect('/', navigate: true);
+            return;
+        }
+
         $this->name = Auth::user()->name;
         $this->email = Auth::user()->email;
     }

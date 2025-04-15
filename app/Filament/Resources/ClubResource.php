@@ -17,14 +17,20 @@ class ClubResource extends Resource
 {
     protected static ?string $model = Club::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-academic-cap';
+    protected static ?string $navigationLabel = 'Гуртки';
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')->required()->maxLength(30),
-                TextInput::make('description'),
+                TextInput::make('name')
+                    ->label('Назва гуртка')
+                    ->maxLength(30)
+                    ->required(),
+                TextInput::make('description')
+                ->label('Опис'),
             ]);
     }
 
@@ -32,8 +38,10 @@ class ClubResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('description'),
+                TextColumn::make('name')
+                    ->label('Назва гуртка'),
+                TextColumn::make('description')
+                    ->label('Опис'),
             ])
             ->filters([
                 //
