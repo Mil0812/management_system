@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\LubResource\Pages;
+namespace App\Filament\Resources\ClubResource\Pages;
 
 use App\Filament\Resources\ClubResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
-class ListLubs extends ListRecords
+class ListClubs extends ListRecords
 {
     protected static string $resource = ClubResource::class;
 

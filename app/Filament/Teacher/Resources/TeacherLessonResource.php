@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Teacher\Resources;
 
-use App\Filament\Resources\LessonResource\Pages;
 use App\Models\Club;
 use App\Models\Lesson;
 use App\Models\Student;
-use App\Models\User;
-use Filament\Forms\Components\ColorPicker;
+use Closure;
+use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
@@ -18,28 +16,23 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
-class LessonResource extends Resource
+class TeacherLessonResource extends Resource
 {
     protected static ?string $model = Lesson::class;
 
     protected static ?string $navigationIcon = 'heroicon-s-academic-cap';
-    protected static ?string $navigationLabel = 'Доходи';
-    protected static ?string $modelLabel = 'Дохід';
-    protected static ?string $pluralModelLabel = 'Доходи';
-    protected static ?int $navigationSort = 5;
-    protected static ?string $navigationGroup = 'Доходи-витрати';
+    protected static ?string $navigationLabel = 'Уроки';
+    protected static ?string $modelLabel = 'Урок';
+    protected static ?string $pluralModelLabel = 'Уроки';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Select::make('teacher_id')
-                    ->label('Вчитель')
-                    ->options(User::all()->pluck('name', 'id'))
-                    ->required(),
-
                 Select::make('students')
                     ->multiple()
                     ->label('Учні')
@@ -60,7 +53,12 @@ class LessonResource extends Resource
 
                 Select::make('club_id')
                     ->label('Назва гуртка')
-                    ->options(Club::all()->pluck('name', 'id'))
+                    ->options(function () {
+                        $teacherId = Auth::id();
+                        return Club::whereHas('teachers', function ($query) use ($teacherId) {
+                            $query->where('teacher_id', $teacherId);
+                        })->pluck('name', 'id');
+                    })
                     ->searchable()
                     ->required(),
 
@@ -93,7 +91,7 @@ class LessonResource extends Resource
                 TextInput::make('total_profit')
                     ->label('Загальний прибуток')
                     ->disabled()
-                    ->default(0)
+                    ->default(0),
             ]);
     }
 
@@ -101,21 +99,23 @@ class LessonResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('teacher.name')->label('Вчитель'),
-                TextColumn::make('student_count')->label('Кількість дітей')->sortable(),
                 TextColumn::make('club.name')->label('Назва гуртка')->sortable(),
                 TextColumn::make('lesson_date')->label('Дата заняття'),
                 TextColumn::make('lesson_time')->label('Час заняття'),
+                TextColumn::make('student_count')->label('Кількість дітей')->sortable(),
                 TextColumn::make('cost')
                     ->label('Вартість заняття за людину')
                     ->money('UAH'),
-                TextColumn::make('total_profit')
-                    ->label('Загальний прибуток')
-                    ->sortable()
-                    ->money('UAH'),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('club_id')
+                    ->label('Гурток')
+                    ->options(function () {
+                        $teacherId = Auth::id();
+                        return Club::whereHas('teachers', function ($query) use ($teacherId) {
+                            $query->where('teacher_id', $teacherId);
+                        })->pluck('name', 'id');
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -137,9 +137,15 @@ class LessonResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListLessons::route('/'),
-            'create' => Pages\CreateLesson::route('/create'),
-            'edit' => Pages\EditLesson::route('/{record}/edit'),
+            'index' => TeacherLessonResource\Pages\ListTeacherLessons::route('/'),
+            'create' => TeacherLessonResource\Pages\CreateTeacherLesson::route('/create'),
+            'edit' => TeacherLessonResource\Pages\EditTeacherLesson::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        // Обмежуємо уроки до тих, які належать поточному вчителю
+        return parent::getEloquentQuery()->where('teacher_id', Auth::id());
     }
 }

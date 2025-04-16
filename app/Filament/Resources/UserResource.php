@@ -16,6 +16,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 
 class UserResource extends Resource
 {
@@ -43,8 +44,7 @@ class UserResource extends Resource
 
                 TextInput::make('password')
                     ->label('Пароль')
-                    ->password()
-                    ->visibleOn('create'),
+                    ->password(),
 
                 FileUpload::make('image')
                     ->label('Аватар')
@@ -71,8 +71,8 @@ class UserResource extends Resource
                     ->label('Аватар')
                     ->circular()
                     ->getStateUsing(function ($record) {
-                        return filter_var($record->image, FILTER_VALIDATE_URL)
-                            ? $record->image : ($record->image ? 'storage/' . $record->image : null);
+                        $url = $record->image ? Storage::disk('public')->url($record->image) : null;
+                        return $url;
                     }),
                 TextColumn::make('name')->label('Прізвище, ім`я')->searchable(),
                 TextColumn::make('email')->label('Електронна пошта'),

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\LubResource\Pages;
+namespace App\Filament\Resources\ClubResource\Pages;
 
 use App\Filament\Resources\ClubResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditLub extends EditRecord
+class EditClub extends EditRecord
 {
     protected static string $resource = ClubResource::class;
 

@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\LubResource\Pages;
+use App\Filament\Resources\ClubResource\Pages;
 use App\Models\Club;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
@@ -35,7 +35,8 @@ class ClubResource extends Resource
                     ->required(),
 
                 TextInput::make('description')
-                ->label('Опис'),
+                ->label('Опис')
+                ->maxLength(255),
 
                 FileUpload::make('image')
                     ->image()
@@ -85,9 +86,9 @@ class ClubResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListLubs::route('/'),
-            'create' => Pages\CreateLub::route('/create'),
-            'edit' => Pages\EditLub::route('/{record}/edit'),
+            'index' => Pages\ListClubs::route('/'),
+            'create' => Pages\CreateClub::route('/create'),
+            'edit' => Pages\EditClub::route('/{record}/edit'),
         ];
     }
 }
