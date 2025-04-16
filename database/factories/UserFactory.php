@@ -6,6 +6,7 @@ use App\Models\Club;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 /**
@@ -17,10 +18,13 @@ class UserFactory extends Factory
 
     public function definition(): array
     {
+        $imageName = 'avatars/default.jpg';
+
         return [
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
             'password' => bcrypt('password'),
+            'image' => $imageName,
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
         ];

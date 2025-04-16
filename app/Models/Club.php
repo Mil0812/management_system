@@ -17,7 +17,7 @@ class Club extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name', 'description', 'image',];
 
     public function teachers(): BelongsToMany
     {

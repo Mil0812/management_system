@@ -19,6 +19,8 @@ class ExpensesResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-currency-dollar';
     protected static ?string $navigationLabel = 'Витрати';
+    protected static ?string $modelLabel = 'Витрати';
+    protected static ?string $pluralModelLabel = 'Витрати';
     protected static ?int $navigationSort = 4;
     protected static ?string $navigationGroup = 'Доходи-витрати';
 

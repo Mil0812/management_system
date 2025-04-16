@@ -16,6 +16,9 @@ class NetProfitResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Чистий прибуток';
+    protected static ?string $modelLabel = 'Чистий прибуток';
+    protected static ?string $pluralModelLabel = 'Прибутки';
+
     protected static ?int $navigationSort = 5;
     protected static ?string $navigationGroup = 'Доходи-витрати';
 

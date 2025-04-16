@@ -5,6 +5,8 @@ namespace Database\Factories;
 use App\Models\Club;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Club>
@@ -18,12 +20,15 @@ class ClubFactory extends Factory
      */
     public function definition(): array
     {
+        $imageName = 'clubs/default.jpg';
+
         return [
             'name' => $this->faker->unique()->randomElement([
                 'Математика', 'Малювання', 'Музика', 'Кулінарія', 'Творчість',
                 'Шахи', 'Арт-креатив', 'Танці', 'IT', 'Іноземні мови'
             ]),
             'description' => $this->faker->text(),
+            'image' => $imageName,
         ];
     }
     public function configure(): ClubFactory|Factory

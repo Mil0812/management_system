@@ -26,6 +26,8 @@ class LessonResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-academic-cap';
     protected static ?string $navigationLabel = 'Уроки';
+    protected static ?string $modelLabel = 'Уроки';
+    protected static ?string $pluralModelLabel = 'Уроки';
     protected static ?int $navigationSort = 5;
     protected static ?string $navigationGroup = 'Доходи-витрати';
 

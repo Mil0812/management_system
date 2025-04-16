@@ -15,6 +15,7 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->string('name')->unique()->comment('Назва гуртка');
             $table->string('description')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
